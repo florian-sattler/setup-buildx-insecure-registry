@@ -1,0 +1,20 @@
+name: Setup Buildx with Insecure Registry
+description: Call the setup-buildx action and configure an insecure registry.
+
+inputs:
+  url:
+    description: The URL of the insecure registry. E.g. `192.168.1.2:5000` or `my-registry.local:3000`.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        driver-opts: image=moby/buildkit:latest
+        install: true
+        buildkitd-config-inline: |
+          [registry."${{ inputs.url }}"]
+            http = true
+            insecure = true
